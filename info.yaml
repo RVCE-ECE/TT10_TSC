@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "Trivium Stream Cipher"     # Project title
+  title:        "Trivium Stream"     # Project title
   author:       "Hithesh S, Eresh, Neeshu Yadav, Abhishek M, Venu Kumar Reddy and Shylashree N, of RV College of Engineering, Bangalore"      # Your name
   discord:      ""                        # Your discord username (optional)
   description:  "A lightweight, stream cipher using Trivium keystream generation with XOR-based encryption and decryption."  # One line description of what your project does
