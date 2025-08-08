@@ -1,6 +1,6 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Tiny Tapeout Verilog Project - Trivium Lite Stream Cipher
+# Tiny Tapeout Verilog Project - Trivium Lite Stream Generator
 
 - [Read the documentation for project](docs/info.md)
 - [Read how to test this project](test/README.md)
