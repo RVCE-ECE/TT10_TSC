@@ -7,34 +7,61 @@ from cocotb.triggers import ClockCycles
 
 
 @cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
+async def tt_um_trivium_stream_processor(dut):
+    """Trivium-lite stream processor interface activity test"""
 
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, units="us")
+    dut._log.info("Starting Trivium-lite stream processor test")
+
+    # Clock period is 20 ns (50 MHz)
+    clock = Clock(dut.clk, 20, units="ns")
     cocotb.start_soon(clock.start())
 
-    # Reset
-    dut._log.info("Reset")
+    # Basic init
     dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
+    dut.ui_in.value = 0x00
+    dut.uio_in.value = 0x00
     dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
+
+    # Reset pulse
+    dut._log.info("Applying reset")
+    await ClockCycles(dut.clk, 3)
     dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 2)
 
-    dut._log.info("Test project behavior")
-
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
-
-    # Wait for one clock cycle to see the output values
+    # Send seed
+    dut._log.info("Sending seed")
+    dut.uio_in.value = 0x76
+    await ClockCycles(dut.clk, 1)
+    dut.uio_in.value = 0x00
     await ClockCycles(dut.clk, 1)
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
+    # First pass
+    dut._log.info("Starting first pass")
+    for i in range(4):
+        dut.ui_in.value = i
+        await ClockCycles(dut.clk, 8)
+        dut._log.info(f"Cycle {i} completed")
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    # Reset again
+    dut._log.info("Resetting internal state")
+    dut.uio_in.value = 0xFF
+    await ClockCycles(dut.clk, 1)
+    dut.uio_in.value = 0x00
+    await ClockCycles(dut.clk, 2)
+
+    # Same seed
+    dut._log.info("Reapplying seed")
+    dut.uio_in.value = 0x76
+    await ClockCycles(dut.clk, 1)
+    dut.uio_in.value = 0x00
+    await ClockCycles(dut.clk, 1)
+
+    # Second pass
+    dut._log.info("Starting second pass")
+    for i in range(4):
+        dut.ui_in.value = i + 10
+        await ClockCycles(dut.clk, 8)
+        dut._log.info(f"Cycle {i} completed")
+
+    # Done
+    dut._log.info("Test completed successfully")
